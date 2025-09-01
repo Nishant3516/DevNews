@@ -5,8 +5,8 @@ import com.example.devnews.domain.repositories.NewsRepository
 import com.example.devnews.utils.ApiResult
 import javax.inject.Inject
 
-class GetNewsUseCase @Inject constructor(private val repository: NewsRepository) {
-    suspend operator fun invoke(categories: List<Int>? = null): ApiResult<List<TaggedNews>> {
-        return repository.getNews(categories)
+class GetNewsFromSlugUseCase @Inject constructor(private val repository: NewsRepository) {
+    suspend operator fun invoke(slug: String): ApiResult<TaggedNews> {
+        return repository.getNewsFromSlug(slug)
     }
 }

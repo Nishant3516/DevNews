@@ -30,8 +30,8 @@ import java.util.Locale
 @Composable
 fun NewsItem(
     news: TaggedNews, category: String, onLikeClick: (Int) -> Unit,
-    onShareClick: (TaggedNews) -> Unit,
-    onBookmarkClick: (TaggedNews) -> Unit
+    onBookmarkClick: (TaggedNews) -> Unit,
+    slugUrl: String?,
 ) {
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val rawNews = news.rawNews
@@ -71,10 +71,13 @@ fun NewsItem(
             } else {
                 NewsCategory(category = category)
             }
-            ActionRow(likes = news.likes,
-                onLikeClick = { onLikeClick(news.id) },
-                onShareClick = { onShareClick(news) },
-                onBookmarkClick = { onBookmarkClick(news) })
+            rawNews.sourceUrl?.let {
+                ActionRow(likes = news.likes,
+                    text = rawNews.title,
+                    url = slugUrl,
+                    onLikeClick = { onLikeClick(news.id) },
+                    onBookmarkClick = { onBookmarkClick(news) })
+            }
         }
         Text(
             text = rawNews.title,

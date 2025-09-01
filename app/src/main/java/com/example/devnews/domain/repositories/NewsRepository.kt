@@ -7,4 +7,5 @@ import com.example.devnews.utils.ApiResult
 interface NewsRepository {
     suspend fun getNews(categories: List<Int>? = null): ApiResult<List<TaggedNews>>
     suspend fun toggleLike(newsId: Int): ApiResult<LikeResponse>
+    suspend fun getNewsFromSlug(slug: String): ApiResult<TaggedNews>
 }

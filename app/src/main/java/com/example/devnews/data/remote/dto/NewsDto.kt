@@ -48,7 +48,8 @@ data class RawNewsDto(
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
     val status: String,
-    @SerializedName("img_url") val imgUrl: String?
+    @SerializedName("img_url") val imgUrl: String?,
+    val slug: String,
 ) {
     fun toDomain(): RawNews {
         return RawNews(
@@ -64,7 +65,8 @@ data class RawNewsDto(
             createdAt = createdAt,
             updatedAt = updatedAt,
             status = status,
-            imgUrl = imgUrl
+            imgUrl = imgUrl,
+            slug = slug,
         )
     }
 }

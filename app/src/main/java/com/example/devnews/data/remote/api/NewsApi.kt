@@ -17,5 +17,11 @@ interface NewsApi {
     suspend fun toggleNewsLike(
         @Path("id") newsId: Int,
     ): LikeResponse
+
+    @GET("news/{slug}/")
+    suspend fun getNewsFromSlug(
+        @Path("slug") slug: String,
+    ): TaggedNewsDto
+
 }
 

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,12 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.devnews.utils.ShareButton
 
 @Composable
 fun ActionRow(
     likes: Int,
+    text: String, url: String?,
     onLikeClick: () -> Unit,
-    onShareClick: () -> Unit,
     onBookmarkClick: () -> Unit
 ) {
     var isLiked by remember { mutableStateOf(false) }
@@ -55,11 +55,7 @@ fun ActionRow(
                 )
             }
             Text(likeCount.toString())
-            IconButton(onClick = onShareClick) {
-                Icon(
-                    imageVector = Icons.Filled.Share, contentDescription = "Share"
-                )
-            }
+            ShareButton(text, url)
             IconButton(onClick = onBookmarkClick) {
                 Icon(
                     imageVector = Icons.Default.Warning, contentDescription = "Bookmark"

@@ -27,7 +27,8 @@ data class RawNews(
     val createdAt: String,
     val updatedAt: String,
     val status: String,
-    val imgUrl: String?
+    val imgUrl: String?,
+    val slug: String,
 )
 
 data class Source(

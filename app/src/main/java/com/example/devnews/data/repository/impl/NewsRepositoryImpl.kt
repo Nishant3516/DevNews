@@ -19,4 +19,10 @@ class NewsRepositoryImpl(private val api: NewsApi) : NewsRepository {
             api.toggleNewsLike(newsId)
         }
     }
+
+    override suspend fun getNewsFromSlug(slug: String): ApiResult<TaggedNews> {
+        return safeApiCall {
+            api.getNewsFromSlug(slug).toDomain()
+        }
+    }
 }
