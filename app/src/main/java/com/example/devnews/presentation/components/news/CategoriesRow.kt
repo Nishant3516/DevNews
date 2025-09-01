@@ -18,7 +18,7 @@ fun CategoriesRow(
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(categories) { category ->

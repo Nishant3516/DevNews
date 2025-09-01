@@ -10,7 +10,8 @@ data class TaggedNews(
     val categories: List<Category>,
     val createdAt: String,
     val updatedAt: String,
-    val summary: String?
+    val summary: String?,
+    val likes: Int
 )
 
 data class RawNews(

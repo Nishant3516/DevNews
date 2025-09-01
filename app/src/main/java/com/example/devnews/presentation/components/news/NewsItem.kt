@@ -19,29 +19,43 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.devnews.domain.entities.TaggedNews
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 @Composable
-fun NewsItem(news: TaggedNews, category: String) {
+fun NewsItem(
+    news: TaggedNews, category: String, onLikeClick: (Int) -> Unit,
+    onShareClick: (TaggedNews) -> Unit,
+    onBookmarkClick: (TaggedNews) -> Unit
+) {
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val rawNews = news.rawNews
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
         AsyncImage(
-            model = rawNews.imgUrl ?: rawNews.url,
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(rawNews.imgUrl ?: rawNews.url)
+                .crossfade(true)
+                .placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_delete)
+                .diskCacheKey(rawNews.id.toString())
+                .diskCachePolicy(coil.request.CachePolicy.ENABLED)
+                .memoryCachePolicy(coil.request.CachePolicy.ENABLED)
+                .build(),
             contentDescription = rawNews.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(LocalConfiguration.current.screenHeightDp.dp * 0.25f)
+                .height(LocalConfiguration.current.screenHeightDp.dp * 0.2f)
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.LightGray)
         )
@@ -57,24 +71,26 @@ fun NewsItem(news: TaggedNews, category: String) {
             } else {
                 NewsCategory(category = category)
             }
-            ActionRow()
+            ActionRow(likes = news.likes,
+                onLikeClick = { onLikeClick(news.id) },
+                onShareClick = { onShareClick(news) },
+                onBookmarkClick = { onBookmarkClick(news) })
         }
         Text(
             text = rawNews.title,
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(8.dp))
         if (!news.summary.isNullOrBlank()) {
             Text(
                 text = news.summary,
-                style = MaterialTheme.typography.bodyLarge,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
                     .weight(1f, fill = true)
                     .fillMaxWidth(),
             )
-            Spacer(modifier = Modifier.height(8.dp))
         } else {
             Spacer(
                 modifier = Modifier
@@ -82,6 +98,7 @@ fun NewsItem(news: TaggedNews, category: String) {
                     .fillMaxWidth(),
             )
         }
+        Spacer(modifier = Modifier.height(8.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
         ) {

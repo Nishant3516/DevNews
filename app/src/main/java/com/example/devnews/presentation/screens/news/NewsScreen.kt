@@ -88,7 +88,15 @@ fun NewsScreen(
                     VerticalPager(
                         state = pagerState, modifier = Modifier.fillMaxSize()
                     ) { page ->
-                        NewsItem(newsList[page], selectedCategory)
+                        NewsItem(
+                            newsList[page],
+                            selectedCategory,
+                            onLikeClick = {newsViewModel.toggleLike(newsList[page].id)},
+//                            onShareClick = { n -> shareNews(context, n) },
+//                            onBookmarkClick = { n -> viewModel.saveBookmark(n) },
+                            onShareClick = { },
+                            onBookmarkClick = { },
+                        )
                     }
                 }
             }

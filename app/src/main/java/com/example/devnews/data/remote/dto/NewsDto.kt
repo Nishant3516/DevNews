@@ -1,10 +1,8 @@
 package com.example.devnews.data.remote.dto
 
-import com.example.devnews.domain.entities.Category
 import com.example.devnews.domain.entities.NewsType
 import com.example.devnews.domain.entities.RawNews
 import com.example.devnews.domain.entities.Source
-import com.example.devnews.domain.entities.Tag
 import com.example.devnews.domain.entities.TaggedNews
 import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
@@ -19,7 +17,8 @@ data class TaggedNewsDto(
     val categories: List<CategoryDto>,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-    val summary: String? = null
+    val summary: String? = null,
+    val likes: Int
 ) {
     fun toDomain(): TaggedNews {
         return TaggedNews(
@@ -30,8 +29,8 @@ data class TaggedNewsDto(
             categories = categories.map { it.toDomain() },
             createdAt = createdAt.toDateOrNow().toString(),
             updatedAt = updatedAt.toDateOrNow().toString(),
-            summary = summary
-
+            summary = summary,
+            likes = likes
         )
     }
 }
@@ -94,10 +93,10 @@ private fun String.toDateOrNow(): Date {
         "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"
     )
     return formats.asSequence().map { fmt ->
-            runCatching {
-                SimpleDateFormat(fmt, Locale.US).parse(this)
-            }.getOrNull()
-        }.firstOrNull { it != null } ?: Date()
+        runCatching {
+            SimpleDateFormat(fmt, Locale.US).parse(this)
+        }.getOrNull()
+    }.firstOrNull { it != null } ?: Date()
 }
 
 private fun String?.toDateOrNull(): Date? {
@@ -106,8 +105,8 @@ private fun String?.toDateOrNull(): Date? {
         "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'"
     )
     return formats.asSequence().map { fmt ->
-            runCatching {
-                SimpleDateFormat(fmt, Locale.US).parse(this)
-            }.getOrNull()
-        }.firstOrNull { it != null }
+        runCatching {
+            SimpleDateFormat(fmt, Locale.US).parse(this)
+        }.getOrNull()
+    }.firstOrNull { it != null }
 }

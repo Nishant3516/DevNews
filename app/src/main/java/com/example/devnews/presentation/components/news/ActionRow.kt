@@ -11,14 +11,28 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ActionRow() {
+fun ActionRow(
+    likes: Int,
+    onLikeClick: () -> Unit,
+    onShareClick: () -> Unit,
+    onBookmarkClick: () -> Unit
+) {
+    var isLiked by remember { mutableStateOf(false) }
+    var likeCount by remember { mutableIntStateOf(likes) }
+
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -28,18 +42,25 @@ fun ActionRow() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
-                onClick = { /* Like action */ }, modifier = Modifier.padding(0.dp)
+                onClick = {
+                    isLiked = !isLiked
+                    likeCount = if (isLiked) likeCount + 1 else maxOf(likeCount - 1, 0)
+                    onLikeClick()
+                }, modifier = Modifier.padding(0.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Favorite, contentDescription = "Like"
+                    imageVector = Icons.Default.Favorite,
+                    contentDescription = "Like",
+                    tint = if (isLiked) Color.Red else Color.White
                 )
             }
-            IconButton(onClick = { /* Share action */ }) {
+            Text(likeCount.toString())
+            IconButton(onClick = onShareClick) {
                 Icon(
                     imageVector = Icons.Filled.Share, contentDescription = "Share"
                 )
             }
-            IconButton(onClick = { /* Bookmark action */ }) {
+            IconButton(onClick = onBookmarkClick) {
                 Icon(
                     imageVector = Icons.Default.Warning, contentDescription = "Bookmark"
                 )

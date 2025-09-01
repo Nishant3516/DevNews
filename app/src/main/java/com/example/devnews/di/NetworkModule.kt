@@ -8,6 +8,7 @@ import com.example.devnews.domain.repositories.CategoryRepository
 import com.example.devnews.domain.repositories.NewsRepository
 import com.example.devnews.domain.usecases.GetCategoryUseCase
 import com.example.devnews.domain.usecases.GetNewsUseCase
+import com.example.devnews.domain.usecases.ToggleLikeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,6 +44,10 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideGetNewsUseCase(repo: NewsRepository): GetNewsUseCase = GetNewsUseCase(repo)
+
+    @Provides
+    @Singleton
+    fun provideToggleNewsLike(repo: NewsRepository): ToggleLikeUseCase = ToggleLikeUseCase(repo)
 
     @Provides
     @Singleton
