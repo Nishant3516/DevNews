@@ -1,5 +1,6 @@
 package com.example.devnews.di
 
+import com.example.devnews.BuildConfig
 import com.example.devnews.data.remote.api.CategoryApi
 import com.example.devnews.data.remote.api.NewsApi
 import com.example.devnews.data.repository.impl.CategoryRepoImpl
@@ -20,6 +21,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    private val baseUrl = BuildConfig.BASE_URL
+
     @Provides
     @Singleton
     fun provideRetrofit(): Retrofit {
@@ -28,13 +31,13 @@ object NetworkModule {
                 chain.request().newBuilder().addHeader("Content-Type", "application/json").build()
             chain.proceed(request)
         }.build()
-        return Retrofit.Builder().baseUrl("http://10.0.2.2:8000/")
+        return Retrofit.Builder().baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create()).client(okHttpClient).build()
     }
 
     @Provides
     @BaseUrl
-    fun provideBaseUrl(): String = "http://10.0.2.2:8000/"
+    fun provideBaseUrl(): String = baseUrl
 
     @Provides
     @Singleton

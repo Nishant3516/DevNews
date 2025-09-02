@@ -21,7 +21,12 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"${project.property("BASE_URL_DEBUG")}\"")
+        }
         release {
+            buildConfigField("String", "BASE_URL", "\"${project.property("BASE_URL_RELEASE")}\"")
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -38,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
