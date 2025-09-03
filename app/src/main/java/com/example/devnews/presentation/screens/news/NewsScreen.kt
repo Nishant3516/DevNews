@@ -1,6 +1,8 @@
 package com.example.devnews.presentation.screens.news
 
+import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.devnews.domain.entities.TaggedNews
 import com.example.devnews.presentation.components.news.CategoriesRow
@@ -49,6 +52,9 @@ fun NewsScreen(
     val mergedNewsList = remember { mutableStateListOf<TaggedNews>() }
     val detailState by newsViewModel.newsDetailState.collectAsState()
 
+    val context = LocalContext.current
+    val shareState by newsViewModel.shareState.collectAsState()
+
     LaunchedEffect(Unit) {
         categoryViewModel.loadSavedCategories()
     }
@@ -67,6 +73,31 @@ fun NewsScreen(
             selected?.let {
                 newsViewModel.fetchNews(listOf(it.id))
             }
+        }
+    }
+
+    LaunchedEffect(shareState) {
+        when (shareState) {
+            is UiState.Success -> {
+                val meta = (shareState as UiState.Success).data
+                println(meta)
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_SUBJECT, meta.title)
+                    putExtra(Intent.EXTRA_TEXT, "${meta.title}\n\n${meta.url}")
+                }
+                context.startActivity(Intent.createChooser(shareIntent, "Share via"))
+            }
+
+            is UiState.Failure -> {
+                Toast.makeText(
+                    context,
+                    "Unable to share news: ${(shareState as UiState.Failure).message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            else -> Unit
         }
     }
 
@@ -109,19 +140,19 @@ fun NewsScreen(
                     }
                     val pagerState = rememberPagerState(pageCount = { mergedNewsList.size })
 
-
                     VerticalPager(
                         state = pagerState, modifier = Modifier.fillMaxSize()
                     ) { page ->
                         NewsItem(
                             mergedNewsList[page],
                             selectedCategory,
-                            slugUrl = newsViewModel.buildDeepLink(
-                                targetNewsSlug ?: mergedNewsList[page].rawNews.slug
-                            ),
+                            slugUrl = targetNewsSlug ?: mergedNewsList[page].rawNews.slug,
                             onLikeClick = { newsViewModel.toggleLike(mergedNewsList[page].id) },
 //                            onBookmarkClick = { n -> viewModel.saveBookmark(n) },
                             onBookmarkClick = { },
+                            onShareClick = { slug ->
+                                newsViewModel.shareNews(slug)
+                            }
                         )
                     }
                 }

@@ -1,22 +1,15 @@
 package com.example.devnews.utils
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
 @Composable
-fun ShareButton( title: String, url: String?) {
-    val context = LocalContext.current
-
+fun ShareButton( title: String, url: String?, onShareClick: (String) -> Unit) {
     IconButton(onClick = {
-        if (url != null) {
-            shareNews(context, title, url)
-        }
+        url?.let { onShareClick(it) }
     }) {
         Icon(
             imageVector = Icons.Filled.Share, contentDescription = "Share"
@@ -24,11 +17,16 @@ fun ShareButton( title: String, url: String?) {
     }
 }
 
-private fun shareNews(context: Context, title: String, url: String) {
-    val shareIntent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_SUBJECT, title)
-        putExtra(Intent.EXTRA_TEXT, "$title\nRead more: $url")
-    }
-    context.startActivity(Intent.createChooser(shareIntent, "Share via"))
-}
+//[Unit]
+//Description=Cloudflare Tunnel
+//After=network.target
+//
+//[Service]
+//Type=simple
+//ExecStart=/home/ubuntu/DevNews-backend/venv/bin/cloudflared tunnel --url http://localhost:80
+//Restart=always
+//User=ubuntu
+//WorkingDirectory=/home/ubuntu/DevNews-backend
+//
+//[Install]
+//WantedBy=multi-user.target

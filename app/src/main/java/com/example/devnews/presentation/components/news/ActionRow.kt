@@ -28,7 +28,8 @@ fun ActionRow(
     likes: Int,
     text: String, url: String?,
     onLikeClick: () -> Unit,
-    onBookmarkClick: () -> Unit
+    onBookmarkClick: () -> Unit,
+    onShareClick: (String) -> Unit
 ) {
     var isLiked by remember { mutableStateOf(false) }
     var likeCount by remember { mutableIntStateOf(likes) }
@@ -55,7 +56,7 @@ fun ActionRow(
                 )
             }
             Text(likeCount.toString())
-            ShareButton(text, url)
+            ShareButton(text, url, onShareClick)
             IconButton(onClick = onBookmarkClick) {
                 Icon(
                     imageVector = Icons.Default.Warning, contentDescription = "Bookmark"

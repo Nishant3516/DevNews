@@ -2,6 +2,7 @@ package com.example.devnews.data.repository.impl
 
 import com.example.devnews.data.remote.api.NewsApi
 import com.example.devnews.data.remote.dto.LikeResponse
+import com.example.devnews.domain.entities.NewsMeta
 import com.example.devnews.domain.entities.TaggedNews
 import com.example.devnews.domain.repositories.NewsRepository
 import com.example.devnews.utils.ApiResult
@@ -23,6 +24,12 @@ class NewsRepositoryImpl(private val api: NewsApi) : NewsRepository {
     override suspend fun getNewsFromSlug(slug: String): ApiResult<TaggedNews> {
         return safeApiCall {
             api.getNewsFromSlug(slug).toDomain()
+        }
+    }
+
+    override suspend fun getNewsMeta(slugUrl: String): ApiResult<NewsMeta> {
+        return safeApiCall {
+            api.getNewsMeta(slugUrl)
         }
     }
 }

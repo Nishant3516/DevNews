@@ -8,7 +8,6 @@ import com.example.devnews.data.repository.impl.NewsRepositoryImpl
 import com.example.devnews.di.annotations.BaseUrl
 import com.example.devnews.domain.repositories.CategoryRepository
 import com.example.devnews.domain.repositories.NewsRepository
-import com.example.devnews.domain.usecases.ToggleLikeUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,10 +45,6 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideNewsRepository(api: NewsApi): NewsRepository = NewsRepositoryImpl(api)
-
-    @Provides
-    @Singleton
-    fun provideToggleNewsLike(repo: NewsRepository): ToggleLikeUseCase = ToggleLikeUseCase(repo)
 
     @Provides
     @Singleton

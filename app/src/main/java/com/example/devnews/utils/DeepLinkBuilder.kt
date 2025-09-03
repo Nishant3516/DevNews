@@ -7,4 +7,5 @@ class DeepLinkBuilder @Inject constructor(
     @BaseUrl private val baseUrl: String
 ) {
     fun newsLink(slug: String): String = "${baseUrl}news/$slug"
+    fun newsMetaLink(slug:String):String= "${baseUrl}news/api/meta/$slug"
 }

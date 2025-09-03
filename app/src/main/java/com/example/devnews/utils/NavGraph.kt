@@ -7,11 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
+import com.example.devnews.BuildConfig
 import com.example.devnews.presentation.screens.category.CategoriesScreen
 import com.example.devnews.presentation.screens.news.NewsScreen
 
 @Composable
 fun NavGraph(navHostController: NavHostController) {
+    val baseUrl = BuildConfig.BASE_URL
+
     NavHost(
         navController = navHostController,
         startDestination = "categories"
@@ -26,11 +29,10 @@ fun NavGraph(navHostController: NavHostController) {
         composable(
             "news/{newsSlug}",
             arguments = listOf(navArgument("newsSlug") { type = NavType.StringType }),
-            deepLinks = listOf(navDeepLink { uriPattern = "https://10.0.2.2:8000/news/{newsSlug}" })
+            deepLinks = listOf(navDeepLink { uriPattern = "https://${baseUrl}/news/{newsSlug}" })
         ) { backStackEntry ->
             val newsSlug = backStackEntry.arguments?.getString("newsSlug")
             NewsScreen(targetNewsSlug = newsSlug)
         }
-
     }
 }

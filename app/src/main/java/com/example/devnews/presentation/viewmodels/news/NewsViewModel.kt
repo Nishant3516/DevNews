@@ -2,8 +2,10 @@ package com.example.devnews.presentation.viewmodels.news
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.devnews.domain.entities.NewsMeta
 import com.example.devnews.domain.entities.TaggedNews
 import com.example.devnews.domain.usecases.GetNewsFromSlugUseCase
+import com.example.devnews.domain.usecases.GetNewsMetaUseCase
 import com.example.devnews.domain.usecases.GetNewsUseCase
 import com.example.devnews.domain.usecases.ToggleLikeUseCase
 import com.example.devnews.utils.ApiResult
@@ -20,8 +22,10 @@ class NewsViewModel @Inject constructor(
     private val getNewsUseCase: GetNewsUseCase,
     private val toggleLikeUseCase: ToggleLikeUseCase,
     private val getNewsFromSlugUseCase: GetNewsFromSlugUseCase,
+    private val getNewsMetaUseCase: GetNewsMetaUseCase,
     private val deepLinkBuilder: DeepLinkBuilder
 ) : ViewModel() {
+
     private val _newsListState = MutableStateFlow<UiState<List<TaggedNews>>>(UiState.Loading)
     val newsListState: StateFlow<UiState<List<TaggedNews>>> = _newsListState
 
@@ -29,7 +33,8 @@ class NewsViewModel @Inject constructor(
     private val _newsDetailState = MutableStateFlow<UiState<TaggedNews>>(UiState.Loading)
     val newsDetailState: StateFlow<UiState<TaggedNews>> = _newsDetailState
 
-    fun buildDeepLink(slug: String): String = deepLinkBuilder.newsLink(slug)
+    private val _shareState = MutableStateFlow<UiState<NewsMeta>>(UiState.Loading)
+    val shareState: StateFlow<UiState<NewsMeta>> = _shareState
 
     fun fetchNews(categories: List<Int>) {
         viewModelScope.launch {
@@ -68,6 +73,22 @@ class NewsViewModel @Inject constructor(
 
                 is ApiResult.Failure -> {
                     _newsListState.value = UiState.Failure(result.message)
+                }
+            }
+        }
+    }
+
+    fun shareNews(slugUrl: String) {
+        viewModelScope.launch {
+            _shareState.value = UiState.Loading
+            when (val result = getNewsMetaUseCase(slugUrl)) {
+                is ApiResult.Success -> {
+                    _shareState.value = UiState.Success(result.data)
+                }
+
+                is ApiResult.Failure -> {
+                    _shareState.value = UiState.Failure(result.message)
+                    println(result)
                 }
             }
         }

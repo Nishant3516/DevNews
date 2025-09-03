@@ -32,6 +32,7 @@ fun NewsItem(
     news: TaggedNews, category: String, onLikeClick: (Int) -> Unit,
     onBookmarkClick: (TaggedNews) -> Unit,
     slugUrl: String?,
+    onShareClick: (String) -> Unit,
 ) {
     val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
     val rawNews = news.rawNews
@@ -42,15 +43,11 @@ fun NewsItem(
             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(rawNews.imgUrl ?: rawNews.url)
-                .crossfade(true)
-                .placeholder(android.R.drawable.ic_menu_report_image)
-                .error(android.R.drawable.ic_delete)
-                .diskCacheKey(rawNews.id.toString())
+            model = ImageRequest.Builder(LocalContext.current).data(rawNews.imgUrl ?: rawNews.url)
+                .crossfade(true).placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_delete).diskCacheKey(rawNews.id.toString())
                 .diskCachePolicy(coil.request.CachePolicy.ENABLED)
-                .memoryCachePolicy(coil.request.CachePolicy.ENABLED)
-                .build(),
+                .memoryCachePolicy(coil.request.CachePolicy.ENABLED).build(),
             contentDescription = rawNews.title,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -72,11 +69,14 @@ fun NewsItem(
                 NewsCategory(category = category)
             }
             rawNews.sourceUrl?.let {
-                ActionRow(likes = news.likes,
+                ActionRow(
+                    likes = news.likes,
                     text = rawNews.title,
                     url = slugUrl,
                     onLikeClick = { onLikeClick(news.id) },
-                    onBookmarkClick = { onBookmarkClick(news) })
+                    onBookmarkClick = { onBookmarkClick(news) },
+                    onShareClick = { slugUrl?.let { onShareClick(it) } }
+                )
             }
         }
         Text(
@@ -120,3 +120,4 @@ fun NewsItem(
         }
     }
 }
+
